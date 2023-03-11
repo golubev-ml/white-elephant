@@ -11,7 +11,7 @@ import (
 	"net/url"
 	"testing"
 	"time"
-	"white_elephant"
+	"github.com/golubev-ml/white-elephant"
 )
 
 func Encode(b []byte) string {
