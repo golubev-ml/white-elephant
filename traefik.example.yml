@@ -1,0 +1,21 @@
+# Static configuration
+
+traefik_plugins:
+  traefik-real-ip:
+    repo: https://github.com/golubev-ml/white-elephant
+    version: v1.0.0
+
+# Dynamic configuration
+
+traefik_middlewares_extra:
+  white-elephant:
+    plugin:
+      white-elephant:
+        white_list:
+          - "whitelist_regexp_1"
+          - "whitelist_regexp_2"          
+        partner_ids:
+          - "b157961d5da94f6b9e9fb34b57a9346b"
+          - "d2c63a605ae27c13e43e26fe2c97a36c"
+        key_lifetime: 3600
+        secret_key: "thisis32bitlongpassphraseimusing"

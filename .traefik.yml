@@ -1,0 +1,16 @@
+displayName: White Elephant
+type: middleware
+
+import: white_elephant
+
+summary: 'Check partner key'
+
+testData:
+  white_list:
+    - "whitelist_regexp_1"
+    - "whitelist_regexp_2"          
+  partner_ids:
+    - "b157961d5da94f6b9e9fb34b57a9346b"
+    - "d2c63a605ae27c13e43e26fe2c97a36c"
+  key_lifetime: 3600
+  secret_key: "thisis32bitlongpassphraseimusing"
