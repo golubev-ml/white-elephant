@@ -115,7 +115,7 @@ func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	// decrypt partner_key with secret_key with AES
-	partner_key, err := DecryptAES([]byte(a.secret_key), partner_key)
+	decrypted_partner_key, err := DecryptAES([]byte(a.secret_key), partner_key)
 	if err != nil {
 		os.Stdout.WriteString("error decrypting partner_key\n")
 		os.Stdout.WriteString("partner_key is " + partner_key + "\n")
@@ -126,7 +126,7 @@ func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// parsing partner_key into parts
 	// example
 	// b157961d5da94f6b9e9fb34b57a9346b:2023-03-10T11:52:52.015572+00:00
-	split_parts := strings.Split(partner_key, ":")
+	split_parts := strings.Split(decrypted_partner_key, ":")
 	id_part := split_parts[0]
 	if !stringInSlice(id_part, a.partner_ids) {
 		os.Stdout.WriteString("error partner id is not found\n")

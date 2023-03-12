@@ -43,7 +43,7 @@ func TestWhiteElephantPositive1(t *testing.T) {
 		t.Fatal(err)
 	}
 	recorder := httptest.NewRecorder()
-	timestamp := time.Now().Add(time.Duration(-59) * time.Minute).UTC().Format(time.RFC3339)
+	timestamp := time.Now().Add(time.Duration(-30) * time.Minute).UTC().Format(time.RFC3339)
 	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
@@ -73,7 +73,7 @@ func TestWhiteElephantPositive2(t *testing.T) {
 		t.Fatal(err)
 	}
 	recorder := httptest.NewRecorder()
-	timestamp := time.Now().Add(time.Duration(-59) * time.Minute).UTC().Format(time.RFC3339)
+	timestamp := time.Now().Add(time.Duration(-30) * time.Minute).UTC().Format(time.RFC3339)
 	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := "http://localhost"
@@ -104,7 +104,7 @@ func TestWhiteElephantPositive3(t *testing.T) {
 		t.Fatal(err)
 	}
 	recorder := httptest.NewRecorder()
-	timestamp := time.Now().Add(time.Duration(-59) * time.Minute).UTC().Format(time.RFC3339)
+	timestamp := time.Now().Add(time.Duration(-30) * time.Minute).UTC().Format(time.RFC3339)
 	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte("1hisis32bitlongpassphraseimusing"), plaintext)
 	full_url := "http://localhost?param=ddddddddd"
@@ -136,9 +136,9 @@ func TestWhiteElephantNegative1(t *testing.T) {
 		t.Fatal(err)
 	}
 	recorder := httptest.NewRecorder()
-	timestamp := time.Now().Add(time.Duration(-59) * time.Minute).UTC().Format(time.RFC3339)
+	timestamp := time.Now().Add(time.Duration(-30) * time.Minute).UTC().Format(time.RFC3339)
 	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
-	cypher, _ := EncryptAES([]byte("1hisis32bitlongpassphraseimusing"), plaintext)
+	cypher, _ := EncryptAES([]byte(cfg.SecretKey), "1"+plaintext)
 	full_url := "http://localhost?param=dddddddd"
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, full_url, nil)
 	if err != nil {
@@ -190,10 +190,10 @@ func TestWhiteElephantNegative3(t *testing.T) {
 		t.Fatal(err)
 	}
 	recorder := httptest.NewRecorder()
-	timestamp := time.Now().Add(time.Duration(-59) * time.Minute).UTC().Format(time.RFC3339)
+	timestamp := time.Now().Add(time.Duration(-30) * time.Minute).UTC().Format(time.RFC3339)
 	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
-	cypher, _ := EncryptAES([]byte("1hisis32bitlongpassphraseimusing"), plaintext)
-	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
+	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
+	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape("1"+cypher))
 	fmt.Println(full_url)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, full_url, nil)
 	if err != nil {
@@ -247,7 +247,7 @@ func TestWhiteElephantNegative5(t *testing.T) {
 		t.Fatal(err)
 	}
 	recorder := httptest.NewRecorder()
-	timestamp := time.Now().Add(time.Duration(-59) * time.Minute).UTC().Format(time.RFC1123)
+	timestamp := time.Now().Add(time.Duration(-30) * time.Minute).UTC().Format(time.RFC1123)
 	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
@@ -306,7 +306,7 @@ func TestWhiteElephantNegative7(t *testing.T) {
 		t.Fatal(err)
 	}
 	recorder := httptest.NewRecorder()
-	timestamp := time.Now().Add(time.Duration(2) * time.Minute).UTC().Format(time.RFC3339)
+	timestamp := time.Now().Add(time.Duration(20) * time.Minute).UTC().Format(time.RFC3339)
 	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
