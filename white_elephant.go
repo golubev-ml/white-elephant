@@ -42,6 +42,9 @@ type WhiteElephant struct {
 
 // New created a new WhiteElephant plugin.
 func New(ctx context.Context, next http.Handler, config *Config, name string) (http.Handler, error) {
+	os.Stdout.WriteString("name is " + name + "\n")
+	os.Stdout.WriteString("white_list is " + strings.Join(config.WhiteList, " ") + "\n")
+	os.Stdout.WriteString("partner_ids is " + strings.Join(config.PartnerIDS, " ") + "\n")
 	return &WhiteElephant{
 		next:         next,
 		name:         name,
