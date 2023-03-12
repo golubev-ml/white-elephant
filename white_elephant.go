@@ -64,7 +64,7 @@ func DecryptAES(key []byte, ct string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	os.Stdout.WriteString(ct + "\n")
+	//os.Stdout.WriteString(ct + "\n")
 	cipherText, err := Decode(ct)
 	if err != nil {
 		return "", err
@@ -149,7 +149,7 @@ func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		http.Error(rw, "err code 1007", http.StatusForbidden)
 		return
 	}
-	os.Stdout.WriteString(timestamp.String() + "\n")
-	os.Stdout.WriteString(time.Now().Sub(timestamp).String() + "\n")
+	//os.Stdout.WriteString(timestamp.String() + "\n")
+	//os.Stdout.WriteString(time.Now().Sub(timestamp).String() + "\n")
 	a.next.ServeHTTP(rw, req)
 }

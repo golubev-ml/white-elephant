@@ -11,7 +11,8 @@ import (
 	"net/url"
 	"testing"
 	"time"
-	"github.com/golubev-ml/white-elephant"
+
+	white_elephant "github.com/golubev-ml/white-elephant"
 )
 
 func Encode(b []byte) string {
@@ -46,6 +47,7 @@ func TestWhiteElephantPositive1(t *testing.T) {
 	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
+	fmt.Println(full_url)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, full_url, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -80,7 +82,7 @@ func TestWhiteElephantPositive2(t *testing.T) {
 		t.Fatal(err)
 	}
 	req.Header.Set("X-Partner-Key", cypher)
-
+	fmt.Println(full_url + "X-Partner-Key: " + cypher)
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
 	if 200 != status {
@@ -111,6 +113,7 @@ func TestWhiteElephantPositive3(t *testing.T) {
 		t.Fatal(err)
 	}
 	req.Header.Set("X-Partner-Key", cypher)
+	fmt.Println(full_url + "X-Partner-Key: " + cypher)
 
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
@@ -142,6 +145,7 @@ func TestWhiteElephantNegative1(t *testing.T) {
 		t.Fatal(err)
 	}
 	req.Header.Set("X-Partner-Key", cypher)
+	fmt.Println(full_url + "X-Partner-Key: " + cypher)
 
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
@@ -190,11 +194,11 @@ func TestWhiteElephantNegative3(t *testing.T) {
 	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte("1hisis32bitlongpassphraseimusing"), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
+	fmt.Println(full_url)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, full_url, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
 	if 403 != status {
@@ -218,6 +222,7 @@ func TestWhiteElephantNegative4(t *testing.T) {
 	plaintext := "id3:" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
+	fmt.Println(full_url)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, full_url, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -246,6 +251,7 @@ func TestWhiteElephantNegative5(t *testing.T) {
 	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
+	fmt.Println(full_url)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, full_url, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -275,6 +281,7 @@ func TestWhiteElephantNegative6(t *testing.T) {
 	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
+	fmt.Println(full_url)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, full_url, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -303,6 +310,7 @@ func TestWhiteElephantNegative7(t *testing.T) {
 	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
+	fmt.Println(full_url)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, full_url, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -331,6 +339,7 @@ func TestWhiteElephantNegative8(t *testing.T) {
 	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
+	fmt.Println(full_url)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, full_url, nil)
 	if err != nil {
 		t.Fatal(err)
