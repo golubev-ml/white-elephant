@@ -149,7 +149,7 @@ func TestWhiteElephantNegative1(t *testing.T) {
 
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
-	if 403 != status {
+	if status != 403 {
 		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
@@ -173,7 +173,7 @@ func TestWhiteElephantNegative2(t *testing.T) {
 	}
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
-	if 403 != status {
+	if status != 403 {
 		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
@@ -201,7 +201,7 @@ func TestWhiteElephantNegative3(t *testing.T) {
 	}
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
-	if 403 != status {
+	if status != 403 {
 		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
@@ -230,7 +230,7 @@ func TestWhiteElephantNegative4(t *testing.T) {
 
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
-	if 403 != status {
+	if status != 403 {
 		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
@@ -259,7 +259,7 @@ func TestWhiteElephantNegative5(t *testing.T) {
 
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
-	if 403 != status {
+	if status != 403 {
 		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
@@ -289,7 +289,7 @@ func TestWhiteElephantNegative6(t *testing.T) {
 
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
-	if 403 != status {
+	if status != 403 {
 		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
@@ -318,7 +318,7 @@ func TestWhiteElephantNegative7(t *testing.T) {
 
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
-	if 403 != status {
+	if status != 403 {
 		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
@@ -347,7 +347,7 @@ func TestWhiteElephantNegative8(t *testing.T) {
 
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
-	if 403 != status {
+	if status != 403 {
 		t.Errorf("wrong status %d, expected 403", status)
 	}
 }

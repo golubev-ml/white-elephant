@@ -96,7 +96,7 @@ func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// if both are missing reply with error
 	x_partner_key := req.Header.Get("X-Partner-Key")
 	partner_key := req.URL.Query().Get("partner_key")
-	if "" == x_partner_key && "" == partner_key {
+	if x_partner_key == "" && partner_key == "" {
 		os.Stdout.WriteString("error missing partner key\n")
 		http.Error(rw, "err code 1001", http.StatusForbidden)
 		return
@@ -104,7 +104,7 @@ func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// if one is missing prioritize partner_key
 	// otherwise take X-Partner-Key
 	// both already urldecoded here
-	if "" == partner_key {
+	if partner_key == "" {
 		partner_key = x_partner_key
 	}
 
@@ -139,12 +139,12 @@ func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		http.Error(rw, "err code 1005", http.StatusForbidden)
 		return
 	}
-	if time.Now().Sub(timestamp) < 0 {
+	if time.Since(timestamp) < 0 {
 		os.Stdout.WriteString("partner_key timestamp is from the future\n")
 		http.Error(rw, "err code 1006", http.StatusForbidden)
 		return
 	}
-	if time.Now().Sub(timestamp) > time.Duration(float64(a.key_lifetime)*float64(time.Second)) {
+	if time.Since(timestamp) > time.Duration(float64(a.key_lifetime)*float64(time.Second)) {
 		os.Stdout.WriteString("partner_key is expired\n")
 		http.Error(rw, "err code 1007", http.StatusForbidden)
 		return
