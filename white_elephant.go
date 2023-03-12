@@ -13,11 +13,13 @@ import (
 )
 
 // Config the plugin configuration.
+// there is a problem with underscores in variable names
+// https://groups.google.com/g/golang-nuts/c/OQSkN6QH-Cc
 type Config struct {
-	WhiteList   []string `json:"white_list,omitempty" toml:"white_list,omitempty" yaml:"white_list,omitempty"`
-	PartnerIDS  []string `json:"partner_ids,omitempty" toml:"partner_ids,omitempty" yaml:"partner_ids,omitempty"`
-	KeyLifeTime int      `json:"key_lifetime,omitempty" toml:"key_lifetime,omitempty" yaml:"key_lifetime,omitempty"`
-	SecretKey   string   `json:"secret_key,omitempty" toml:"secret_key,omitempty" yaml:"secret_key,omitempty"`
+	WhiteList   []string `json:"whitelist,omitempty"`
+	PartnerIDS  []string `json:"partnerids,omitempty"`
+	KeyLifeTime int      `json:"keylifetime,omitempty"`
+	SecretKey   string   `json:"secretkey,omitempty"`
 }
 
 // CreateConfig creates the default plugin configuration.
