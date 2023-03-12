@@ -97,7 +97,8 @@ func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	x_partner_key := req.Header.Get("X-Partner-Key")
 	partner_key := req.URL.Query().Get("partner_key")
 	if x_partner_key == "" && partner_key == "" {
-		os.Stdout.WriteString("error missing partner key\n")
+		os.Stdout.WriteString("error missing partner key")
+		os.Stdout.WriteString("either in partner_key or in X-Partner-Key\n")
 		http.Error(rw, "err code 1001", http.StatusForbidden)
 		return
 	}
@@ -112,6 +113,7 @@ func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	partner_key, err := DecryptAES([]byte(a.secret_key), partner_key)
 	if err != nil {
 		os.Stdout.WriteString("error decrypting partner_key\n")
+		os.Stdout.WriteString("partner_key is " + partner_key + "\n")
 		http.Error(rw, "err code 1002", http.StatusForbidden)
 		return
 	}
@@ -123,6 +125,8 @@ func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	id_part := split_parts[0]
 	if !stringInSlice(id_part, a.partner_ids) {
 		os.Stdout.WriteString("error partner id is not found\n")
+		os.Stdout.WriteString("partner id is " + id_part + "\n")
+		os.Stdout.WriteString("not in " + strings.Join(a.partner_ids, " ") + "\n")
 		http.Error(rw, "err code 1003", http.StatusForbidden)
 		return
 	}
@@ -130,22 +134,26 @@ func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	timestamp, err := time.Parse(time.RFC3339, time_part)
 	if err != nil {
 		os.Stdout.WriteString("cannot parse timestamp from partner_key\n")
+		os.Stdout.WriteString("time_part is " + time_part + "\n")
 		http.Error(rw, "err code 1004", http.StatusForbidden)
 		return
 	}
 	_, offset := timestamp.Zone()
 	if offset != 0 {
 		os.Stdout.WriteString("partner_key timestamp's timezone is not UTC\n")
+		os.Stdout.WriteString("time_part is " + time_part + "\n")
 		http.Error(rw, "err code 1005", http.StatusForbidden)
 		return
 	}
 	if time.Since(timestamp) < 0 {
 		os.Stdout.WriteString("partner_key timestamp is from the future\n")
+		os.Stdout.WriteString("time_part is " + time_part + "\n")
 		http.Error(rw, "err code 1006", http.StatusForbidden)
 		return
 	}
 	if time.Since(timestamp) > time.Duration(float64(a.key_lifetime)*float64(time.Second)) {
 		os.Stdout.WriteString("partner_key is expired\n")
+		os.Stdout.WriteString("time_part is " + time_part + "\n")
 		http.Error(rw, "err code 1007", http.StatusForbidden)
 		return
 	}
