@@ -1,5 +1,6 @@
 displayName: White Elephant
 type: middleware
+iconPath: .assets/icon.png
 
 import: github.com/golubev-ml/white-elephant
 
