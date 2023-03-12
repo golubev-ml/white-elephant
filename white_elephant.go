@@ -97,7 +97,7 @@ func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	x_partner_key := req.Header.Get("X-Partner-Key")
 	partner_key := req.URL.Query().Get("partner_key")
 	if "" == x_partner_key && "" == partner_key {
-		os.Stdout.WriteString("missing partner key\n")
+		os.Stdout.WriteString("error missing partner key\n")
 		http.Error(rw, "err code 1001", http.StatusForbidden)
 		return
 	}
