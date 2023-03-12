@@ -14,10 +14,10 @@ import (
 
 // Config the plugin configuration.
 type Config struct {
-	WhiteList   []string `json:"white_list,omitempty"`
-	PartnerIDS  []string `json:"partner_ids,omitempty"`
-	KeyLifeTime int      `json:"key_lifetime,omitempty"`
-	SecretKey   string   `json:"secret_key,omitempty"`
+	WhiteList   []string `json:"white_list,omitempty" toml:"white_list,omitempty" yaml:"white_list,omitempty"`
+	PartnerIDS  []string `json:"partner_ids,omitempty" toml:"partner_ids,omitempty" yaml:"partner_ids,omitempty"`
+	KeyLifeTime int      `json:"key_lifetime,omitempty" toml:"key_lifetime,omitempty" yaml:"key_lifetime,omitempty"`
+	SecretKey   string   `json:"secret_key,omitempty" toml:"secret_key,omitempty" yaml:"secret_key,omitempty"`
 }
 
 // CreateConfig creates the default plugin configuration.
