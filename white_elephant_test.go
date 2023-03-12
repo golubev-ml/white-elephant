@@ -55,7 +55,7 @@ func TestWhiteElephantPositive1(t *testing.T) {
 
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
-	if 200 != status {
+	if status != 200 {
 		t.Errorf("wrong status %d, expected 200", status)
 	}
 }
@@ -85,7 +85,7 @@ func TestWhiteElephantPositive2(t *testing.T) {
 	fmt.Println(full_url + "X-Partner-Key: " + cypher)
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
-	if 200 != status {
+	if status != 200 {
 		t.Errorf("wrong status %d, expected 200", status)
 	}
 }
@@ -117,7 +117,7 @@ func TestWhiteElephantPositive3(t *testing.T) {
 
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
-	if 200 != status {
+	if status != 200 {
 		t.Errorf("wrong status %d, expected 200", status)
 	}
 }
