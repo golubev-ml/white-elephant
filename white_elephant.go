@@ -43,10 +43,6 @@ type WhiteElephant struct {
 
 // New created a new WhiteElephant plugin.
 func New(ctx context.Context, next http.Handler, config *Config, name string) (http.Handler, error) {
-	if len(config.PartnerIDS) == 0 {
-		return nil, fmt.Errorf("partner_ids cannot be empty")
-	}
-
 	return &WhiteElephant{
 		next:         next,
 		name:         name,
