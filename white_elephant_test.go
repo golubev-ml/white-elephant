@@ -146,7 +146,7 @@ func TestWhiteElephantNegative1(t *testing.T) {
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
 	if 403 != status {
-		t.Errorf("wrong status %d, expected 200", status)
+		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
 func TestWhiteElephantNegative2(t *testing.T) {
@@ -170,7 +170,7 @@ func TestWhiteElephantNegative2(t *testing.T) {
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
 	if 403 != status {
-		t.Errorf("wrong status %d, expected 200", status)
+		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
 func TestWhiteElephantNegative3(t *testing.T) {
@@ -198,7 +198,7 @@ func TestWhiteElephantNegative3(t *testing.T) {
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
 	if 403 != status {
-		t.Errorf("wrong status %d, expected 200", status)
+		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
 func TestWhiteElephantNegative4(t *testing.T) {
@@ -226,7 +226,7 @@ func TestWhiteElephantNegative4(t *testing.T) {
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
 	if 403 != status {
-		t.Errorf("wrong status %d, expected 200", status)
+		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
 func TestWhiteElephantNegative5(t *testing.T) {
@@ -254,7 +254,7 @@ func TestWhiteElephantNegative5(t *testing.T) {
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
 	if 403 != status {
-		t.Errorf("wrong status %d, expected 200", status)
+		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
 func TestWhiteElephantNegative6(t *testing.T) {
@@ -270,7 +270,8 @@ func TestWhiteElephantNegative6(t *testing.T) {
 		t.Fatal(err)
 	}
 	recorder := httptest.NewRecorder()
-	timestamp := time.Now().Add(time.Duration(-59) * time.Minute).Format(time.RFC3339)
+	loc, _ := time.LoadLocation("Asia/Shanghai")
+	timestamp := time.Now().Add(time.Duration(-59) * time.Minute).In(loc).Format(time.RFC3339)
 	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
@@ -282,7 +283,7 @@ func TestWhiteElephantNegative6(t *testing.T) {
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
 	if 403 != status {
-		t.Errorf("wrong status %d, expected 200", status)
+		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
 func TestWhiteElephantNegative7(t *testing.T) {
@@ -310,7 +311,7 @@ func TestWhiteElephantNegative7(t *testing.T) {
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
 	if 403 != status {
-		t.Errorf("wrong status %d, expected 200", status)
+		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
 func TestWhiteElephantNegative8(t *testing.T) {
@@ -338,6 +339,6 @@ func TestWhiteElephantNegative8(t *testing.T) {
 	handler.ServeHTTP(recorder, req)
 	status := recorder.Result().StatusCode
 	if 403 != status {
-		t.Errorf("wrong status %d, expected 200", status)
+		t.Errorf("wrong status %d, expected 403", status)
 	}
 }
