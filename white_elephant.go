@@ -144,7 +144,7 @@ func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		http.Error(rw, "err code 1006", http.StatusForbidden)
 		return
 	}
-	if nowTime.Sub(timestamp) > time.Duration(a.keyLifeTime*int(time.Second)) {
+	if nowTime.Sub(timestamp) > time.Duration(a.keyLifeTime)*time.Second {
 		fmt.Println("partner_key is expired")
 		fmt.Println("time_part is ", time_part)
 		http.Error(rw, "err code 1007", http.StatusForbidden)
