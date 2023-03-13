@@ -5,11 +5,13 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
+	"fmt"
 	"net/http"
-	"os"
 	"regexp"
 	"strings"
 	"time"
+
+	"golang.org/x/exp/slices"
 )
 
 // Config the plugin configuration.
@@ -17,7 +19,7 @@ import (
 // https://groups.google.com/g/golang-nuts/c/OQSkN6QH-Cc
 type Config struct {
 	WhiteList   []string `json:"whitelist,omitempty"`
-	PartnerIDS  []string `json:"partnerids,omitempty"`
+	PartnerIDs  []string `json:"partnerids,omitempty"`
 	KeyLifeTime int      `json:"keylifetime,omitempty"`
 	SecretKey   string   `json:"secretkey,omitempty"`
 }
@@ -26,7 +28,7 @@ type Config struct {
 func CreateConfig() *Config {
 	return &Config{
 		WhiteList:   make([]string, 0),
-		PartnerIDS:  make([]string, 0),
+		PartnerIDs:  make([]string, 0),
 		KeyLifeTime: 3600,
 		SecretKey:   "thisis32bitlongpassphraseimusing",
 	}
@@ -34,63 +36,48 @@ func CreateConfig() *Config {
 
 // WhiteElephant plugin.
 type WhiteElephant struct {
-	next         http.Handler
-	name         string
-	partner_ids  []string
-	white_list   []string
-	key_lifetime int
-	secret_key   string
+	next        http.Handler
+	name        string
+	partnerIDs  []string
+	whiteList   []string
+	keyLifeTime int
+	secretKey   string
 }
 
 // New created a new WhiteElephant plugin.
 func New(ctx context.Context, next http.Handler, config *Config, name string) (http.Handler, error) {
-	os.Stdout.WriteString("name is " + name + "\n")
-	os.Stdout.WriteString("white_list is " + strings.Join(config.WhiteList, " ") + "\n")
-	os.Stdout.WriteString("partner_ids is " + strings.Join(config.PartnerIDS, " ") + "\n")
+	fmt.Println("name is ", name)
+	fmt.Println("whiteList is ", strings.Join(config.WhiteList, " "))
+	fmt.Println("partnerIDs is ", strings.Join(config.PartnerIDs, " "))
 	return &WhiteElephant{
-		next:         next,
-		name:         name,
-		white_list:   config.WhiteList,
-		partner_ids:  config.PartnerIDS,
-		key_lifetime: config.KeyLifeTime,
-		secret_key:   config.SecretKey,
+		next:        next,
+		name:        name,
+		whiteList:   config.WhiteList,
+		partnerIDs:  config.PartnerIDs,
+		keyLifeTime: config.KeyLifeTime,
+		secretKey:   config.SecretKey,
 	}, nil
 }
 
-func Decode(s string) ([]byte, error) {
-	data, err := base64.StdEncoding.DecodeString(s)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
-}
 func DecryptAES(key []byte, ct string) (string, error) {
 	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to create new cipher: %w", err)
 	}
-	//os.Stdout.WriteString(ct + "\n")
-	cipherText, err := Decode(ct)
+	//fmt.Println(ct)
+	cipherText, err := base64.StdEncoding.DecodeString(ct)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to decode cipher text: %w", err)
 	}
 	cfb := cipher.NewCFBDecrypter(block, key[1:17])
 	plainText := make([]byte, len(cipherText))
 	cfb.XORKeyStream(plainText, cipherText)
 	return string(plainText), nil
 }
-func stringInSlice(a string, list []string) bool {
-	for _, b := range list {
-		if b == a {
-			return true
-		}
-	}
-	return false
-}
 func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// When URL matches one of the expressions from the list
 	// just forrward the request to the next handler
-	for _, re := range a.white_list {
+	for _, re := range a.whiteList {
 		matched, _ := regexp.MatchString(re, req.URL.String())
 		if matched {
 			a.next.ServeHTTP(rw, req)
@@ -102,8 +89,8 @@ func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	x_partner_key := req.Header.Get("X-Partner-Key")
 	partner_key := req.URL.Query().Get("partner_key")
 	if x_partner_key == "" && partner_key == "" {
-		os.Stdout.WriteString("error missing partner key")
-		os.Stdout.WriteString("either in partner_key or in X-Partner-Key\n")
+		fmt.Println("error missing partner key")
+		fmt.Println("either in partner_key or in X-Partner-Key")
 		http.Error(rw, "err code 1001", http.StatusForbidden)
 		return
 	}
@@ -114,55 +101,56 @@ func (a *WhiteElephant) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		partner_key = x_partner_key
 	}
 
-	// decrypt partner_key with secret_key with AES
-	decrypted_partner_key, err := DecryptAES([]byte(a.secret_key), partner_key)
+	// decrypt partner_key with secretKey with AES
+	decrypted_partner_key, err := DecryptAES([]byte(a.secretKey), partner_key)
 	if err != nil {
-		os.Stdout.WriteString("error decrypting partner_key\n")
-		os.Stdout.WriteString("partner_key is " + partner_key + "\n")
+		fmt.Println("error decrypting partner_key")
+		fmt.Println("partner_key is ", partner_key)
 		http.Error(rw, "err code 1002", http.StatusForbidden)
 		return
 	}
-	// os.Stdout.WriteString(fmt.Sprintf("partner key is %s\n", partner_key))
+	// fmt.Println(fmt.Sprintf("partner key is ", partner_key))
 	// parsing partner_key into parts
 	// example
 	// b157961d5da94f6b9e9fb34b57a9346b:2023-03-10T11:52:52.015572+00:00
 	split_parts := strings.Split(decrypted_partner_key, ":")
 	id_part := split_parts[0]
-	if !stringInSlice(id_part, a.partner_ids) {
-		os.Stdout.WriteString("error partner id is not found\n")
-		os.Stdout.WriteString("partner id is " + id_part + "\n")
-		os.Stdout.WriteString("not in " + strings.Join(a.partner_ids, " ") + "\n")
+	if !slices.Contains(a.partnerIDs, id_part) {
+		fmt.Println("error partner id is not found")
+		fmt.Println("partner id is ", id_part)
+		fmt.Println("not in ", strings.Join(a.partnerIDs, " "))
 		http.Error(rw, "err code 1003", http.StatusForbidden)
 		return
 	}
 	time_part := strings.Join(split_parts[1:], ":")
 	timestamp, err := time.Parse(time.RFC3339, time_part)
 	if err != nil {
-		os.Stdout.WriteString("cannot parse timestamp from partner_key\n")
-		os.Stdout.WriteString("time_part is " + time_part + "\n")
+		fmt.Println("cannot parse timestamp from partner_key")
+		fmt.Println("time_part is ", time_part)
 		http.Error(rw, "err code 1004", http.StatusForbidden)
 		return
 	}
 	_, offset := timestamp.Zone()
 	if offset != 0 {
-		os.Stdout.WriteString("partner_key timestamp's timezone is not UTC\n")
-		os.Stdout.WriteString("time_part is " + time_part + "\n")
+		fmt.Println("partner_key timestamp's timezone is not UTC")
+		fmt.Println("time_part is ", time_part)
 		http.Error(rw, "err code 1005", http.StatusForbidden)
 		return
 	}
-	if time.Since(timestamp) < 0 {
-		os.Stdout.WriteString("partner_key timestamp is from the future\n")
-		os.Stdout.WriteString("time_part is " + time_part + "\n")
+	nowTime := time.Now()
+	if nowTime.Before(timestamp) {
+		fmt.Println("partner_key timestamp is from the future")
+		fmt.Println("time_part is ", time_part)
 		http.Error(rw, "err code 1006", http.StatusForbidden)
 		return
 	}
-	if time.Since(timestamp) > time.Duration(float64(a.key_lifetime)*float64(time.Second)) {
-		os.Stdout.WriteString("partner_key is expired\n")
-		os.Stdout.WriteString("time_part is " + time_part + "\n")
+	if nowTime.Sub(timestamp) > time.Duration(a.keyLifeTime*int(time.Second)) {
+		fmt.Println("partner_key is expired")
+		fmt.Println("time_part is ", time_part)
 		http.Error(rw, "err code 1007", http.StatusForbidden)
 		return
 	}
-	//os.Stdout.WriteString(timestamp.String() + "\n")
-	//os.Stdout.WriteString(time.Now().Sub(timestamp).String() + "\n")
+	//fmt.Println(timestamp.String())
+	//fmt.Println(time.Now().Sub(timestamp).String())
 	a.next.ServeHTTP(rw, req)
 }

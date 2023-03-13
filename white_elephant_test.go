@@ -32,7 +32,7 @@ func EncryptAES(key []byte, plaintext string) (string, error) {
 
 func TestWhiteElephantPositive1(t *testing.T) {
 	cfg := white_elephant.CreateConfig()
-	cfg.PartnerIDS = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
+	cfg.PartnerIDs = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
 	cfg.KeyLifeTime = 3600
 	cfg.SecretKey = "thisis32bitlongpassphraseimusing"
 
@@ -44,7 +44,7 @@ func TestWhiteElephantPositive1(t *testing.T) {
 	}
 	recorder := httptest.NewRecorder()
 	timestamp := time.Now().Add(time.Duration(-30) * time.Minute).UTC().Format(time.RFC3339)
-	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
+	plaintext := cfg.PartnerIDs[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
 	fmt.Println(full_url)
@@ -62,7 +62,7 @@ func TestWhiteElephantPositive1(t *testing.T) {
 
 func TestWhiteElephantPositive2(t *testing.T) {
 	cfg := white_elephant.CreateConfig()
-	cfg.PartnerIDS = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
+	cfg.PartnerIDs = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
 	cfg.KeyLifeTime = 3600
 	cfg.SecretKey = "thisis32bitlongpassphraseimusing"
 
@@ -74,7 +74,7 @@ func TestWhiteElephantPositive2(t *testing.T) {
 	}
 	recorder := httptest.NewRecorder()
 	timestamp := time.Now().Add(time.Duration(-30) * time.Minute).UTC().Format(time.RFC3339)
-	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
+	plaintext := cfg.PartnerIDs[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := "http://localhost"
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, full_url, nil)
@@ -92,7 +92,7 @@ func TestWhiteElephantPositive2(t *testing.T) {
 
 func TestWhiteElephantPositive3(t *testing.T) {
 	cfg := white_elephant.CreateConfig()
-	cfg.PartnerIDS = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
+	cfg.PartnerIDs = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
 	cfg.KeyLifeTime = 3600
 	cfg.SecretKey = "thisis32bitlongpassphraseimusing"
 	cfg.WhiteList = []string{"abcccccc", "ddddddddd"}
@@ -105,7 +105,7 @@ func TestWhiteElephantPositive3(t *testing.T) {
 	}
 	recorder := httptest.NewRecorder()
 	timestamp := time.Now().Add(time.Duration(-30) * time.Minute).UTC().Format(time.RFC3339)
-	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
+	plaintext := cfg.PartnerIDs[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte("1hisis32bitlongpassphraseimusing"), plaintext)
 	full_url := "http://localhost?param=ddddddddd"
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, full_url, nil)
@@ -124,7 +124,7 @@ func TestWhiteElephantPositive3(t *testing.T) {
 
 func TestWhiteElephantNegative1(t *testing.T) {
 	cfg := white_elephant.CreateConfig()
-	cfg.PartnerIDS = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
+	cfg.PartnerIDs = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
 	cfg.KeyLifeTime = 3600
 	cfg.SecretKey = "thisis32bitlongpassphraseimusing"
 	cfg.WhiteList = []string{"abcccccc", "ddddddddd"}
@@ -137,7 +137,7 @@ func TestWhiteElephantNegative1(t *testing.T) {
 	}
 	recorder := httptest.NewRecorder()
 	timestamp := time.Now().Add(time.Duration(-30) * time.Minute).UTC().Format(time.RFC3339)
-	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
+	plaintext := cfg.PartnerIDs[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), "1"+plaintext)
 	full_url := "http://localhost?param=dddddddd"
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, full_url, nil)
@@ -155,7 +155,7 @@ func TestWhiteElephantNegative1(t *testing.T) {
 }
 func TestWhiteElephantNegative2(t *testing.T) {
 	cfg := white_elephant.CreateConfig()
-	cfg.PartnerIDS = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
+	cfg.PartnerIDs = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
 	cfg.KeyLifeTime = 3600
 	cfg.SecretKey = "thisis32bitlongpassphraseimusing"
 
@@ -179,7 +179,7 @@ func TestWhiteElephantNegative2(t *testing.T) {
 }
 func TestWhiteElephantNegative3(t *testing.T) {
 	cfg := white_elephant.CreateConfig()
-	cfg.PartnerIDS = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
+	cfg.PartnerIDs = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
 	cfg.KeyLifeTime = 3600
 	cfg.SecretKey = "thisis32bitlongpassphraseimusing"
 
@@ -191,7 +191,7 @@ func TestWhiteElephantNegative3(t *testing.T) {
 	}
 	recorder := httptest.NewRecorder()
 	timestamp := time.Now().Add(time.Duration(-30) * time.Minute).UTC().Format(time.RFC3339)
-	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
+	plaintext := cfg.PartnerIDs[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape("1"+cypher))
 	fmt.Println(full_url)
@@ -207,7 +207,7 @@ func TestWhiteElephantNegative3(t *testing.T) {
 }
 func TestWhiteElephantNegative4(t *testing.T) {
 	cfg := white_elephant.CreateConfig()
-	cfg.PartnerIDS = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
+	cfg.PartnerIDs = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
 	cfg.KeyLifeTime = 3600
 	cfg.SecretKey = "thisis32bitlongpassphraseimusing"
 
@@ -236,7 +236,7 @@ func TestWhiteElephantNegative4(t *testing.T) {
 }
 func TestWhiteElephantNegative5(t *testing.T) {
 	cfg := white_elephant.CreateConfig()
-	cfg.PartnerIDS = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
+	cfg.PartnerIDs = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
 	cfg.KeyLifeTime = 3600
 	cfg.SecretKey = "thisis32bitlongpassphraseimusing"
 
@@ -248,7 +248,7 @@ func TestWhiteElephantNegative5(t *testing.T) {
 	}
 	recorder := httptest.NewRecorder()
 	timestamp := time.Now().Add(time.Duration(-30) * time.Minute).UTC().Format(time.RFC1123)
-	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
+	plaintext := cfg.PartnerIDs[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
 	fmt.Println(full_url)
@@ -265,7 +265,7 @@ func TestWhiteElephantNegative5(t *testing.T) {
 }
 func TestWhiteElephantNegative6(t *testing.T) {
 	cfg := white_elephant.CreateConfig()
-	cfg.PartnerIDS = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
+	cfg.PartnerIDs = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
 	cfg.KeyLifeTime = 3600
 	cfg.SecretKey = "thisis32bitlongpassphraseimusing"
 
@@ -278,7 +278,7 @@ func TestWhiteElephantNegative6(t *testing.T) {
 	recorder := httptest.NewRecorder()
 	loc, _ := time.LoadLocation("Asia/Shanghai")
 	timestamp := time.Now().Add(time.Duration(-59) * time.Minute).In(loc).Format(time.RFC3339)
-	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
+	plaintext := cfg.PartnerIDs[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
 	fmt.Println(full_url)
@@ -295,7 +295,7 @@ func TestWhiteElephantNegative6(t *testing.T) {
 }
 func TestWhiteElephantNegative7(t *testing.T) {
 	cfg := white_elephant.CreateConfig()
-	cfg.PartnerIDS = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
+	cfg.PartnerIDs = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
 	cfg.KeyLifeTime = 3600
 	cfg.SecretKey = "thisis32bitlongpassphraseimusing"
 
@@ -307,7 +307,7 @@ func TestWhiteElephantNegative7(t *testing.T) {
 	}
 	recorder := httptest.NewRecorder()
 	timestamp := time.Now().Add(time.Duration(20) * time.Minute).UTC().Format(time.RFC3339)
-	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
+	plaintext := cfg.PartnerIDs[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
 	fmt.Println(full_url)
@@ -324,7 +324,7 @@ func TestWhiteElephantNegative7(t *testing.T) {
 }
 func TestWhiteElephantNegative8(t *testing.T) {
 	cfg := white_elephant.CreateConfig()
-	cfg.PartnerIDS = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
+	cfg.PartnerIDs = []string{"b157961d5da94f6b9e9fb34b57a9346b", "id2"}
 	cfg.KeyLifeTime = 3600
 	cfg.SecretKey = "thisis32bitlongpassphraseimusing"
 
@@ -336,7 +336,7 @@ func TestWhiteElephantNegative8(t *testing.T) {
 	}
 	recorder := httptest.NewRecorder()
 	timestamp := time.Now().Add(time.Duration(-62) * time.Minute).UTC().Format(time.RFC3339)
-	plaintext := cfg.PartnerIDS[0] + ":" + timestamp
+	plaintext := cfg.PartnerIDs[0] + ":" + timestamp
 	cypher, _ := EncryptAES([]byte(cfg.SecretKey), plaintext)
 	full_url := fmt.Sprintf("http://localhost?partner_key=%s", url.QueryEscape(cypher))
 	fmt.Println(full_url)
